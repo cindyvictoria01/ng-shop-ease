@@ -1,0 +1,184 @@
+<div class="min-h-screen flex flex-col bg-gray-50">
+  <app-navbar />
+  <main class="flex-1">
+    <!-- Hero Slider -->
+    <section class="mx-auto max-w-7xl px-6 py-10">
+      <!-- Loading -->
+      <div
+        *ngIf="isLoading"
+        class="flex min-h-[420px] items-center justify-center rounded-3xl bg-gray-200"
+      >
+        <p class="text-gray-500">Loading products...</p>
+      </div>
+
+      <!-- Error -->
+      <div
+        *ngIf="hasError"
+        class="flex min-h-[420px] items-center justify-center rounded-3xl bg-red-50"
+      >
+        <p class="text-red-500">Failed to load products. Please try again.</p>
+      </div>
+
+      <!-- Slider -->
+      <div
+        *ngIf="!isLoading && !hasError && slides.length > 0"
+        class="relative min-h-[420px] overflow-hidden rounded-3xl bg-gradient-to-br from-blue-200 via-white to-blue-300"
+      >
+        <!-- Slide -->
+        <div class="flex min-h-[420px] items-center px-8 py-10 md:px-12">
+          <!-- Text -->
+          <div class="max-w-xl ml-4">
+            <p
+              class="mb-4 text-sm font-semibold uppercase tracking-wider text-blue-600"
+            >
+              Featured Product
+            </p>
+
+            <h1
+              class="text-4xl font-bold leading-tight text-gray-900 md:text-5xl"
+            >
+              {{ slides[currentSlide].title }}
+            </h1>
+
+            <p class="mt-5 max-w-lg text-lg leading-relaxed text-gray-600">
+              {{ slides[currentSlide].description }}
+            </p>
+
+            <div class="mt-6 flex items-center gap-4">
+              <span class="text-3xl font-bold text-gray-900">
+                ${{ slides[currentSlide].price }}
+              </span>
+
+              <span
+                class="flex items-center gap-1 rounded-full bg-white/20 px-3 py-1 text-sm"
+              >
+                <lucide-icon [img]="Star" [size]="16" class="text-yellow-400" />
+                {{ slides[currentSlide].rating }}
+              </span>
+            </div>
+
+            <a
+              [routerLink]="['/detail', slides[currentSlide].id]"
+              class="mt-8 inline-flex items-center rounded-xl bg-blue-500 px-6 py-3 font-semibold text-white transition hover:bg-blue-400"
+            >
+              View Product
+            </a>
+          </div>
+
+          <!-- Product Image -->
+          <div
+            class="ml-auto hidden w-[40%] items-center justify-center lg:flex"
+          >
+            <div class="flex h-80 w-80 items-center justify-center p-8">
+              <img
+                [src]="slides[currentSlide].thumbnail"
+                [alt]="slides[currentSlide].title"
+                class="max-h-64 max-w-64 rounded-2xl object-contain drop-shadow-2xl"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Previous -->
+        <button
+          type="button"
+          (click)="previousSlide()"
+          class="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur transition hover:bg-white/70"
+          aria-label="Previous slide"
+        >
+          <lucide-icon [img]="ChevronLeft" [size]="22" />
+        </button>
+
+        <!-- Next -->
+        <button
+          type="button"
+          (click)="nextSlide()"
+          class="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur transition hover:bg-white/70"
+          aria-label="Next slide"
+        >
+          <lucide-icon [img]="ChevronRight" [size]="22" />
+        </button>
+
+        <!-- Dots -->
+        <div class="absolute bottom-6 left-1/2 flex -translate-x-1/2 gap-2">
+          <button
+            *ngFor="let slide of slides; let i = index"
+            type="button"
+            (click)="currentSlide = i"
+            [class.w-6]="currentSlide === i"
+            [class.w-2]="currentSlide !== i"
+            class="h-2 rounded-full bg-white transition-all"
+            [attr.aria-label]="'Go to slide ' + (i + 1)"
+          ></button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products -->
+    <section id="products" class="mx-auto max-w-7xl px-6 pb-16">
+      <div class="mb-8 flex items-end justify-between">
+        <div>
+          <p
+            class="text-sm font-semibold uppercase tracking-wider text-blue-600"
+          >
+            Explore
+          </p>
+
+          <h2 class="mt-1 text-3xl font-bold text-gray-900">
+            Popular Products
+          </h2>
+        </div>
+
+        <p class="hidden text-sm text-gray-500 sm:block">
+          Discover something you'll love
+        </p>
+      </div>
+
+      <!-- Product Grid -->
+      <div
+        *ngIf="!isLoading && !hasError"
+        class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4"
+      >
+        <a
+          *ngFor="let product of products"
+          [routerLink]="['/detail', product.id]"
+          class="group overflow-hidden rounded-2xl border border-gray-100 bg-white transition hover:-translate-y-1 hover:shadow-lg"
+        >
+          <!-- Image -->
+          <div class="flex h-56 items-center justify-center bg-gray-50 p-6">
+            <img
+              [src]="product.thumbnail"
+              [alt]="product.title"
+              class="h-full w-full object-contain transition duration-300 group-hover:scale-105"
+            />
+          </div>
+
+          <!-- Info -->
+          <div class="p-5">
+            <p class="mb-2 text-xs font-medium uppercase text-gray-400">
+              {{ product.category }}
+            </p>
+
+            <h3 class="line-clamp-2 min-h-[48px] font-semibold text-gray-900">
+              {{ product.title }}
+            </h3>
+
+            <div class="mt-4 flex items-center justify-between">
+              <span class="text-xl font-bold text-gray-900">
+                ${{ product.price }}
+              </span>
+
+              <span class="flex items-center gap-1 text-sm text-gray-500">
+                <lucide-icon [img]="Star" [size]="15" class="text-yellow-400" />
+                {{ product.rating }}
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+  </main>
+  <footer class="py-4 text-center text-xs text-gray-400">
+    <p>© 2026 Cindy B Victoria. All rights reserved.</p>
+  </footer>
+</div>

@@ -1,0 +1,134 @@
+<div class="min-h-screen flex flex-col bg-gray-50 px-4">
+  <main class="flex flex-1 items-center justify-center w-full">
+    <div class="w-full max-w-md">
+      <!-- Brand -->
+      <div class="mb-8 text-center">
+        <div class="flex items-center justify-center gap-4">
+          <div class="h-8 w-8">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="32"
+              height="32"
+              viewBox="0 0 24 24"
+            >
+              <path
+                fill="#2563EB"
+                d="M6 11v10c0 1.654 1.346 3 3 3h12c1.654 0 3-1.346 3-3V11zm13 5c0 2.206-1.794 4-4 4s-4-1.794-4-4v-2h2v2c0 1.103.897 2 2 2s2-.897 2-2v-2h2zM4 9h15V5h-5v-.5C14 2.019 11.981 0 9.5 0S5 2.019 5 4.5V5H0v11c0 1.654 1.346 3 3 3h1zm3-4.5C7 3.121 8.122 2 9.5 2S12 3.121 12 4.5V5H7z"
+              />
+            </svg>
+          </div>
+
+          <span class="text-2xl font-bold text-gray-900"> Shop Ease </span>
+        </div>
+      </div>
+
+      <!-- Login Card -->
+      <div class="rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
+        <div class="mb-6">
+          <h1 class="text-2xl font-bold text-gray-900">Welcome back!</h1>
+
+          <p class="mt-2 text-sm text-gray-500">
+            Login to your Shop Ease account
+          </p>
+        </div>
+
+        <form class="space-y-5" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <p
+            *ngIf="loginError"
+            class="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-600"
+          >
+            Invalid email or password.
+          </p>
+          <!-- Email -->
+          <div>
+            <label
+              for="email"
+              class="mb-2 block text-sm font-medium text-gray-700"
+            >
+              Email
+            </label>
+
+            <input
+              id="email"
+              type="email"
+              formControlName="email"
+              placeholder="Enter your email"
+              class="w-full rounded-lg border border-gray-300 px-4 py-3 text-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+            />
+            <p
+              *ngIf="
+                loginForm.controls['email'].touched &&
+                loginForm.controls['email'].hasError('required')
+              "
+              class="mt-1 text-sm text-red-500"
+            >
+              Email is required.
+            </p>
+            <p
+              *ngIf="
+                loginForm.controls['email'].touched &&
+                loginForm.controls['email'].hasError('email')
+              "
+              class="mt-1 text-sm text-red-500"
+            >
+              Please enter a valid email address.
+            </p>
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label
+              for="password"
+              class="mb-2 block text-sm font-medium text-gray-700"
+            >
+              Password
+            </label>
+
+            <div class="relative">
+              <input
+                [type]="showPassword ? 'text' : 'password'"
+                id="password"
+                formControlName="password"
+                placeholder="Enter your password"
+                class="w-full rounded-lg border border-gray-300 px-4 py-3 pr-12 text-sm outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+              />
+
+              <button
+                type="button"
+                (click)="togglePassword()"
+                class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                [attr.aria-label]="
+                  showPassword ? 'Hide password' : 'Show password'
+                "
+              >
+                <lucide-icon [img]="showPassword ? EyeOff : Eye" [size]="20" />
+              </button>
+            </div>
+          </div>
+
+          <!-- Login -->
+          <button
+            type="submit"
+            class="w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
+          >
+            Login
+          </button>
+        </form>
+
+        <!-- Signup -->
+        <p class="mt-6 text-center text-sm text-gray-500">
+          Don't have an account?
+          <a
+            routerLink="/signup"
+            class="font-semibold text-blue-600 hover:text-blue-700 cursor-pointer"
+          >
+            Sign up
+          </a>
+        </p>
+      </div>
+    </div>
+  </main>
+  <footer class="py-4 text-center text-xs text-gray-400">
+    <p>© 2026 Cindy B Victoria. All rights reserved.</p>
+  </footer>
+</div>

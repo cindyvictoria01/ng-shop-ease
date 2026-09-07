@@ -1,0 +1,239 @@
+<div class="min-h-screen flex flex-col bg-gray-50">
+  <app-navbar />
+  <main class="flex-1">
+    <!-- Loading -->
+    <div
+      *ngIf="isLoading"
+      class="mx-auto flex min-h-[500px] max-w-7xl items-center justify-center"
+    >
+      <p class="text-gray-500">Loading product...</p>
+    </div>
+
+    <!-- Error -->
+    <div
+      *ngIf="hasError"
+      class="mx-auto flex min-h-[500px] max-w-7xl items-center justify-center"
+    >
+      <div class="text-center">
+        <p class="text-lg font-semibold text-gray-900">Product not found</p>
+
+        <a
+          routerLink="/home"
+          class="mt-4 inline-flex items-center gap-2 text-blue-600 transition hover:text-blue-700"
+        >
+          <lucide-icon [img]="ArrowLeft" [size]="18" />
+          Back to Home
+        </a>
+      </div>
+    </div>
+
+    <!-- Product Content -->
+    <section *ngIf="!isLoading && !hasError && product" class="mx-auto max-w-7xl">
+      <!-- Back -->
+      <a
+        routerLink="/home"
+        class="mt-6 mb-8 inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition hover:text-blue-600"
+      >
+        <lucide-icon [img]="ArrowLeft" [size]="18" />
+        Back to Home
+      </a>
+
+      <!-- Main Product -->
+      <div
+        class="overflow-hidden rounded-3xl border border-gray-100 bg-white shadow-sm"
+      >
+        <div class="grid lg:grid-cols-2">
+          <!-- Product Image -->
+          <div
+            class="flex min-h-[450px] items-center justify-center bg-gray-50 p-10"
+          >
+            <img
+              [src]="product.thumbnail"
+              [alt]="product.title"
+              class="max-h-[400px] max-w-full object-contain transition duration-300 hover:scale-105"
+            />
+          </div>
+
+          <!-- Product Details -->
+          <div class="flex flex-col justify-center p-8 md:p-12">
+            <!-- Category -->
+            <span
+              class="mb-4 w-fit rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-600"
+            >
+              {{ product.category }}
+            </span>
+
+            <!-- Title -->
+            <h1
+              class="text-3xl font-bold leading-tight text-gray-900 md:text-4xl"
+            >
+              {{ product.title }}
+            </h1>
+
+            <!-- Rating & Stock -->
+            <div class="mt-4 flex flex-wrap items-center gap-4">
+              <!-- Rating -->
+              <div class="flex items-center gap-1">
+                <lucide-icon [img]="Star" [size]="18" class="text-yellow-400" />
+
+                <span class="font-semibold">
+                  {{ product.rating }}
+                </span>
+              </div>
+
+              <!-- Stock -->
+              <span class="text-sm text-gray-400">
+                • {{ product.stock }} in stock
+              </span>
+            </div>
+
+            <!-- Price -->
+            <div class="mt-6">
+              <span class="text-4xl font-bold text-gray-900">
+                ${{ product.price }}
+              </span>
+            </div>
+
+            <!-- Description -->
+            <p class="mt-6 text-base leading-7 text-gray-600">
+              {{ product.description }}
+            </p>
+
+            <!-- Add to Cart -->
+            <button
+              type="button"
+              class="mt-8 w-full rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 md:w-fit"
+            >
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product Information -->
+      <section
+        class="mt-8 rounded-3xl border border-gray-100 bg-white p-8 shadow-sm"
+      >
+        <h2 class="text-2xl font-bold text-gray-900">Product Information</h2>
+
+        <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <!-- Brand -->
+          <div>
+            <p class="text-sm text-gray-400">Brand</p>
+
+            <p class="mt-1 font-semibold text-gray-900">
+              {{ product.brand || "—" }}
+            </p>
+          </div>
+
+          <!-- Availability -->
+          <div>
+            <p class="text-sm text-gray-400">Availability</p>
+
+            <p class="mt-1 font-semibold text-green-600">
+              {{ product.availabilityStatus || "In Stock" }}
+            </p>
+          </div>
+
+          <!-- Shipping -->
+          <div>
+            <p class="text-sm text-gray-400">Shipping</p>
+
+            <p class="mt-1 font-semibold text-gray-900">
+              {{ product.shippingInformation || "—" }}
+            </p>
+          </div>
+
+          <!-- Warranty -->
+          <div>
+            <p class="text-sm text-gray-400">Warranty</p>
+
+            <p class="mt-1 font-semibold text-gray-900">
+              {{ product.warrantyInformation || "—" }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Return Policy -->
+        <div
+          *ngIf="product.returnPolicy"
+          class="mt-6 border-t border-gray-100 pt-6"
+        >
+          <p class="text-sm text-gray-400">Return Policy</p>
+
+          <p class="mt-1 font-semibold text-gray-900">
+            {{ product.returnPolicy }}
+          </p>
+        </div>
+      </section>
+
+      <!-- Reviews -->
+      <section
+        *ngIf="product.reviews?.length"
+        class="mt-8 rounded-3xl border border-gray-100 bg-white p-8 shadow-sm"
+      >
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900">Customer Reviews</h2>
+
+            <p class="mt-1 text-sm text-gray-500">
+              What customers are saying about this product
+            </p>
+          </div>
+
+          <div class="hidden items-center gap-2 sm:flex">
+            <lucide-icon
+              [img]="Star"
+              [size]="20"
+              class="text-yellow-400"
+            />
+
+            <span class="font-semibold text-gray-900">
+              {{ product.rating }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Review List -->
+        <div class="mt-6 divide-y divide-gray-100">
+          <div
+            *ngFor="let review of product.reviews"
+            class="py-6 first:pt-0 last:pb-0"
+          >
+            <!-- Reviewer -->
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <p class="font-semibold text-gray-900">
+                  {{ review.reviewerName }}
+                </p>
+
+                <div class="mt-2 flex items-center gap-1">
+                  <lucide-icon
+                    *ngFor="let star of [1, 2, 3, 4, 5]"
+                    [img]="Star"
+                    [size]="16"
+                    [class.text-yellow-400]="star <= review.rating"
+                    [class.text-gray-300]="star > review.rating"
+                  />
+                </div>
+              </div>
+
+              <span class="text-xs text-gray-400">
+                {{ review.date | date: "MMM d, y" }}
+              </span>
+            </div>
+
+            <!-- Comment -->
+            <p class="mt-3 text-sm leading-6 text-gray-600">
+              {{ review.comment }}
+            </p>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+  <footer class="py-4 text-center text-xs text-gray-400">
+    <p>© 2026 Cindy B Victoria. All rights reserved.</p>
+  </footer>
+</div>
+
