@@ -6,9 +6,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Eye, EyeOff, LucideAngularModule } from 'lucide-angular';
+import { Eye, EyeOff, LoaderCircle, LucideAngularModule } from 'lucide-angular';
 import { AuthService } from '../../../core/auth/auth.service';
 import { Router } from '@angular/router';
+import { ToastService } from '../../../shared/toast/toast.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -20,15 +22,18 @@ import { Router } from '@angular/router';
 export class LoginComponent {
   readonly Eye = Eye;
   readonly EyeOff = EyeOff;
+  readonly LoaderCircle = LoaderCircle;
 
   showPassword = false;
   loginError = false;
+  isLoading = false;
 
   loginForm: FormGroup;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private toastService: ToastService,
     private router: Router,
   ) {
     this.loginForm = this.fb.group({
@@ -48,22 +53,33 @@ export class LoginComponent {
     }
 
     this.loginError = false;
+    this.isLoading = true;
 
     const { email, password } = this.loginForm.value;
 
-    this.authService.login(email, password).subscribe({
-      next: (user) => {
-        if (user) {
-          this.authService.setLoggedIn();
-          this.router.navigate(['/home']);
-        } else {
+    this.authService
+      .login(email, password)
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+        }),
+      )
+      .subscribe({
+        next: (user) => {
+          if (user) {
+            this.authService.setLoggedIn();
+            this.toastService.success('Login successful');
+            this.router.navigate(['/home']);
+          } else {
+            this.loginError = true;
+            this.toastService.error('Login failed');
+          }
+        },
+        error: (error) => {
+          console.error('Login failed:', error);
           this.loginError = true;
-        }
-      },
-      error: (error) => {
-        console.error('Login failed:', error);
-        this.loginError = true;
-      },
-    });
+          this.toastService.error('Login failed');
+        },
+      });
   }
 }

@@ -1,0 +1,35 @@
+<div
+  *ngIf="toast$ | async as toast"
+  @toastAnimation
+  class="fixed bottom-6 right-6 z-50 flex w-[320px] items-center gap-3 rounded-xl border border-gray-100 bg-white px-4 py-3 shadow-xl"
+>
+  <!-- Icon -->
+  <div
+    class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full"
+    [ngClass]="{
+      'bg-green-50 text-green-600': toast.type === 'success',
+      'bg-red-50 text-red-600': toast.type === 'error',
+    }"
+  >
+    <lucide-icon
+      *ngIf="toast.type === 'success'"
+      [img]="Check"
+      [size]="17"
+      strokeWidth="2.5"
+    />
+
+    <lucide-icon
+      *ngIf="toast.type === 'error'"
+      [img]="CircleX"
+      [size]="17"
+      strokeWidth="2.5"
+    />
+  </div>
+
+  <!-- Message -->
+  <div class="min-w-0 flex-1">
+    <p class="text-sm font-semibold text-gray-900">
+      {{ toast.message }}
+    </p>
+  </div>
+</div>

@@ -10,11 +10,14 @@ import {
 import { Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../core/auth/auth.service';
+import { CartService } from '../../core/services/cart.service';
+import { ToastService } from '../toast/toast.service';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, RouterLink],
+  imports: [CommonModule, ReactiveFormsModule, RouterLink, LucideAngularModule],
   templateUrl: './navbar.component.html',
 })
 export class NavbarComponent {
@@ -24,11 +27,16 @@ export class NavbarComponent {
   readonly LogOut = LogOut;
 
   showUserMenu = false;
+  searchControl = new FormControl('');
 
   constructor(
     private authService: AuthService,
+    private cartService: CartService,
     private router: Router,
+    private toastService: ToastService,
   ) {}
+
+  cartCount$ = this.cartService.cartCount$;
 
   toggleUserMenu(): void {
     this.showUserMenu = !this.showUserMenu;
@@ -36,6 +44,7 @@ export class NavbarComponent {
 
   logout(): void {
     this.authService.logout();
+    this.toastService.success('Logout successful');
     this.router.navigate(['/login']);
   }
 }

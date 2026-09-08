@@ -1,25 +1,27 @@
-<div class="min-h-screen flex flex-col bg-gray-50">
+<div class="min-h-screen flex flex-col bg-gray-50 mt-16">
   <app-navbar />
-  <main class="flex-1">
+  <main class="flex flex-1 flex-col">
     <!-- Loading -->
-    <div
-      *ngIf="isLoading"
-      class="mx-auto flex min-h-[500px] max-w-7xl items-center justify-center"
-    >
-      <p class="text-gray-500">Loading product...</p>
+    <div *ngIf="isLoading" class="flex flex-1 items-center justify-center px-6">
+      <app-loading-spinner />
     </div>
 
     <!-- Error -->
-    <div
-      *ngIf="hasError"
-      class="mx-auto flex min-h-[500px] max-w-7xl items-center justify-center"
-    >
-      <div class="text-center">
-        <p class="text-lg font-semibold text-gray-900">Product not found</p>
-
+    <div *ngIf="hasError" class="flex flex-1 items-center justify-center px-6">
+      <div class="flex max-w-md flex-col items-center text-center">
+        <div
+          class="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-gray-100"
+        >
+          <lucide-icon [img]="PackageX" [size]="36" class="text-gray-400" />
+        </div>
+        <h2 class="text-xl font-semibold text-gray-900">Product not found</h2>
+        <p class="mt-2 text-sm leading-6 text-gray-500">
+          Sorry, we couldn't find the product you're looking for. It may have
+          been removed or the link may be incorrect.
+        </p>
         <a
           routerLink="/home"
-          class="mt-4 inline-flex items-center gap-2 text-blue-600 transition hover:text-blue-700"
+          class="mt-6 inline-flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
         >
           <lucide-icon [img]="ArrowLeft" [size]="18" />
           Back to Home
@@ -28,7 +30,10 @@
     </div>
 
     <!-- Product Content -->
-    <section *ngIf="!isLoading && !hasError && product" class="mx-auto max-w-7xl">
+    <section
+      *ngIf="!isLoading && !hasError && product"
+      class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8"
+    >
       <!-- Back -->
       <a
         routerLink="/home"
@@ -45,7 +50,7 @@
         <div class="grid lg:grid-cols-2">
           <!-- Product Image -->
           <div
-            class="flex min-h-[450px] items-center justify-center bg-gray-50 p-10"
+            class="flex min-h-[320px] items-center justify-center bg-gray-50 p-6 sm:min-h-[400px] sm:p-10"
           >
             <img
               [src]="product.thumbnail"
@@ -55,7 +60,7 @@
           </div>
 
           <!-- Product Details -->
-          <div class="flex flex-col justify-center p-8 md:p-12">
+          <div class="flex flex-col justify-center p-6 sm:p-8 md:p-12">
             <!-- Category -->
             <span
               class="mb-4 w-fit rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-blue-600"
@@ -71,7 +76,7 @@
             </h1>
 
             <!-- Rating & Stock -->
-            <div class="mt-4 flex flex-wrap items-center gap-4">
+            <div class="mt-4 flex flex-wrap items-center gap-5">
               <!-- Rating -->
               <div class="flex items-center gap-1">
                 <lucide-icon [img]="Star" [size]="18" class="text-yellow-400" />
@@ -82,16 +87,57 @@
               </div>
 
               <!-- Stock -->
-              <span class="text-sm text-gray-400">
-                • {{ product.stock }} in stock
-              </span>
+              <div class="flex items-center gap-2">
+                <span
+                  class="h-2 w-2 rounded-full"
+                  [class.bg-green-500]="product.stock > 5"
+                  [class.bg-yellow-500]="
+                    product.stock > 0 && product.stock <= 5
+                  "
+                  [class.bg-red-500]="product.stock <= 0"
+                ></span>
+
+                <span
+                  class="text-sm font-medium"
+                  [class.text-green-600]="product.stock > 5"
+                  [class.text-yellow-600]="
+                    product.stock > 0 && product.stock <= 5
+                  "
+                  [class.text-red-600]="product.stock <= 0"
+                >
+                  {{
+                    product.stock > 5
+                      ? product.stock + " in stock"
+                      : product.stock > 0
+                        ? "Only " + product.stock + " left"
+                        : "Out of stock"
+                  }}
+                </span>
+              </div>
             </div>
 
             <!-- Price -->
+            <!-- Price -->
             <div class="mt-6">
-              <span class="text-4xl font-bold text-gray-900">
-                ${{ product.price }}
-              </span>
+              <div class="flex flex-wrap items-baseline gap-3">
+                <span class="text-4xl font-bold text-gray-900">
+                  ${{ product.price }}
+                </span>
+
+                <span
+                  *ngIf="product.discountPercentage > 0"
+                  class="text-lg text-gray-400 line-through"
+                >
+                  ${{ getOriginalPrice() | number: "1.2-2" }}
+                </span>
+
+                <span
+                  *ngIf="product.discountPercentage > 0"
+                  class="rounded-full bg-red-50 px-2.5 py-1 text-xs font-semibold text-red-600"
+                >
+                  {{ product.discountPercentage | number: "1.0-0" }}% OFF
+                </span>
+              </div>
             </div>
 
             <!-- Description -->
@@ -102,9 +148,17 @@
             <!-- Add to Cart -->
             <button
               type="button"
-              class="mt-8 w-full rounded-xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 md:w-fit"
+              [disabled]="isAddingToCart || product.stock <= 0"
+              (click)="addToCart()"
+              class="mt-8 w-full rounded-xl px-6 py-3 font-semibold text-white shadow-sm transition md:w-fit bg-blue-600 hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-300"
             >
-              Add to Cart
+              {{
+                product.stock <= 0
+                  ? "Out of Stock"
+                  : isAddingToCart
+                    ? "Adding to Cart..."
+                    : "Add to Cart"
+              }}
             </button>
           </div>
         </div>
@@ -112,7 +166,7 @@
 
       <!-- Product Information -->
       <section
-        class="mt-8 rounded-3xl border border-gray-100 bg-white p-8 shadow-sm"
+        class="mt-8 rounded-3xl border border-gray-100 bg-white p-6 shadow-sm sm:p-8"
       >
         <h2 class="text-2xl font-bold text-gray-900">Product Information</h2>
 
@@ -152,6 +206,29 @@
               {{ product.warrantyInformation || "—" }}
             </p>
           </div>
+
+          <!-- SKU -->
+          <div>
+            <p class="text-sm text-gray-400">SKU</p>
+
+            <p class="mt-1 font-semibold text-gray-900">
+              {{ product.sku || "—" }}
+            </p>
+          </div>
+
+          <!-- Tags -->
+          <div *ngIf="product.tags?.length">
+            <p class="text-sm text-gray-400">Tags</p>
+
+            <div class="mt-2 flex flex-wrap gap-2">
+              <span
+                *ngFor="let tag of product.tags"
+                class="rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600"
+              >
+                {{ tag }}
+              </span>
+            </div>
+          </div>
         </div>
 
         <!-- Return Policy -->
@@ -170,9 +247,11 @@
       <!-- Reviews -->
       <section
         *ngIf="product.reviews?.length"
-        class="mt-8 rounded-3xl border border-gray-100 bg-white p-8 shadow-sm"
+        class="mt-8 rounded-3xl border border-gray-100 bg-white p-6 sm:p-8 shadow-sm"
       >
-        <div class="flex items-center justify-between">
+        <div
+          class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+        >
           <div>
             <h2 class="text-2xl font-bold text-gray-900">Customer Reviews</h2>
 
@@ -182,14 +261,14 @@
           </div>
 
           <div class="hidden items-center gap-2 sm:flex">
-            <lucide-icon
-              [img]="Star"
-              [size]="20"
-              class="text-yellow-400"
-            />
+            <lucide-icon [img]="Star" [size]="20" class="text-yellow-400" />
 
             <span class="font-semibold text-gray-900">
               {{ product.rating }}
+            </span>
+
+            <span class="text-sm text-gray-400">
+              ({{ product.reviews?.length || 0 }} reviews)
             </span>
           </div>
         </div>
@@ -236,4 +315,3 @@
     <p>© 2026 Cindy B Victoria. All rights reserved.</p>
   </footer>
 </div>
-

@@ -19,6 +19,11 @@ A web application built with **Angular and TypeScript**, featuring authenticatio
 * JSON Server
 * HTML / CSS
 
+## Requirements
+
+- Node.js v18.13.0 or higher
+- npm
+
 ## Getting Started
 
 ### Installation
@@ -30,7 +35,7 @@ npm install
 ### Run the application
 
 ```bash
-ng serve
+npm start
 ```
 
 The application will be available at `http://localhost:4200`.
@@ -40,7 +45,7 @@ The application will be available at `http://localhost:4200`.
 This project uses JSON Server as a local mock backend.
 
 ```bash
-json-server --watch db.json
+npm run api
 ```
 
 The API will run at `http://localhost:3000`.

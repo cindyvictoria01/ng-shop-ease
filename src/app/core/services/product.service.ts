@@ -21,7 +21,8 @@ export interface Product {
   brand?: string;
   thumbnail: string;
   images: string[];
-
+  tags: string[];
+  sku: string;
   availabilityStatus?: string;
   warrantyInformation?: string;
   shippingInformation?: string;
@@ -51,5 +52,11 @@ export class ProductService {
 
   getProductById(id: number): Observable<Product> {
     return this.http.get<Product>(`${this.apiUrl}/${id}`);
+  }
+
+  searchProducts(query: string): Observable<ProductResponse> {
+    return this.http.get<ProductResponse>(
+      `${this.apiUrl}/search?q=${encodeURIComponent(query)}`,
+    );
   }
 }

@@ -1,12 +1,12 @@
-<div class="min-h-screen flex flex-col bg-gray-50">
+<div class="min-h-screen flex flex-col bg-gray-50 pt-16">
   <app-navbar />
   <main class="flex-1">
     <!-- Hero Slider -->
-    <section class="mx-auto max-w-7xl px-6 py-10">
+    <section class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-10">
       <!-- Loading -->
       <div
         *ngIf="isLoading"
-        class="flex min-h-[420px] items-center justify-center rounded-3xl bg-gray-200"
+        class="flex min-h-[360px] md:min-h-[420px] items-center justify-center rounded-3xl bg-gray-200"
       >
         <p class="text-gray-500">Loading products...</p>
       </div>
@@ -14,7 +14,7 @@
       <!-- Error -->
       <div
         *ngIf="hasError"
-        class="flex min-h-[420px] items-center justify-center rounded-3xl bg-red-50"
+        class="flex min-h-[360px] md:min-h-[420px] items-center justify-center rounded-3xl bg-red-50"
       >
         <p class="text-red-500">Failed to load products. Please try again.</p>
       </div>
@@ -22,12 +22,15 @@
       <!-- Slider -->
       <div
         *ngIf="!isLoading && !hasError && slides.length > 0"
-        class="relative min-h-[420px] overflow-hidden rounded-3xl bg-gradient-to-br from-blue-200 via-white to-blue-300"
+        class="relative h-[360px] md:h-[420px] overflow-hidden rounded-3xl bg-gradient-to-br from-blue-200 via-white to-blue-300"
       >
         <!-- Slide -->
-        <div class="flex min-h-[420px] items-center px-8 py-10 md:px-12">
+        <div
+          [@slideAnimation]="currentSlide"
+          class="flex min-h-[360px] items-center px-6 py-10 md:min-h-[420px] md:px-12"
+        >
           <!-- Text -->
-          <div class="max-w-xl ml-4">
+          <div class="ml-0 flex max-w-xl flex-col lg:ml-4">
             <p
               class="mb-4 text-sm font-semibold uppercase tracking-wider text-blue-600"
             >
@@ -35,12 +38,14 @@
             </p>
 
             <h1
-              class="text-4xl font-bold leading-tight text-gray-900 md:text-5xl"
+              class="truncate h-[56px] text-3xl font-bold leading-normal text-gray-900 sm:text-4xl md:text-5xl"
             >
               {{ slides[currentSlide].title }}
             </h1>
 
-            <p class="mt-5 max-w-lg text-lg leading-relaxed text-gray-600">
+            <p
+              class="mt-5 line-clamp-3 text-base leading-7 text-gray-600 sm:text-lg"
+            >
               {{ slides[currentSlide].description }}
             </p>
 
@@ -59,7 +64,7 @@
 
             <a
               [routerLink]="['/detail', slides[currentSlide].id]"
-              class="mt-8 inline-flex items-center rounded-xl bg-blue-500 px-6 py-3 font-semibold text-white transition hover:bg-blue-400"
+              class="mt-8 inline-flex w-fit items-center rounded-xl bg-blue-500 px-6 py-3 font-semibold text-white transition hover:bg-blue-400"
             >
               View Product
             </a>
@@ -83,7 +88,7 @@
         <button
           type="button"
           (click)="previousSlide()"
-          class="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur transition hover:bg-white/70"
+          class="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur transition hover:bg-white/70 hidden sm:flex"
           aria-label="Previous slide"
         >
           <lucide-icon [img]="ChevronLeft" [size]="22" />
@@ -93,7 +98,7 @@
         <button
           type="button"
           (click)="nextSlide()"
-          class="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur transition hover:bg-white/70"
+          class="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur transition hover:bg-white/70 hidden sm:flex"
           aria-label="Next slide"
         >
           <lucide-icon [img]="ChevronRight" [size]="22" />
@@ -115,7 +120,10 @@
     </section>
 
     <!-- Products -->
-    <section id="products" class="mx-auto max-w-7xl px-6 pb-16">
+    <section
+      id="products"
+      class="mx-auto max-w-7xl px-4 pb-12 sm:px-6 sm:pb-16"
+    >
       <div class="mb-8 flex items-end justify-between">
         <div>
           <p
@@ -142,10 +150,19 @@
         <a
           *ngFor="let product of products"
           [routerLink]="['/detail', product.id]"
-          class="group overflow-hidden rounded-2xl border border-gray-100 bg-white transition hover:-translate-y-1 hover:shadow-lg"
+          class="group overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
         >
           <!-- Image -->
-          <div class="flex h-56 items-center justify-center bg-gray-50 p-6">
+          <div
+            class="relative flex h-56 items-center justify-center bg-gray-100 p-6"
+          >
+            <span
+              *ngIf="product.rating >= 4.5"
+              class="absolute right-4 top-4 rounded-full bg-yellow-500 px-3 py-1 text-xs font-semibold text-white shadow-sm"
+            >
+              Top Rated
+            </span>
+
             <img
               [src]="product.thumbnail"
               [alt]="product.title"
@@ -163,12 +180,23 @@
               {{ product.title }}
             </h3>
 
-            <div class="mt-4 flex items-center justify-between">
-              <span class="text-xl font-bold text-gray-900">
-                ${{ product.price }}
-              </span>
+            <div class="mt-4 flex items-center justify-between gap-3">
+              <div class="flex min-w-0 items-center gap-2">
+                <span class="text-xl font-bold text-gray-900">
+                  ${{ product.price }}
+                </span>
 
-              <span class="flex items-center gap-1 text-sm text-gray-500">
+                <span
+                  *ngIf="product.discountPercentage > 0"
+                  class="shrink-0 rounded-full bg-red-50 px-2 py-0.5 text-xs font-semibold text-red-600"
+                >
+                  {{ product.discountPercentage | number: "1.0-0" }}% OFF
+                </span>
+              </div>
+
+              <span
+                class="flex shrink-0 items-center gap-2 text-sm text-gray-500"
+              >
                 <lucide-icon [img]="Star" [size]="15" class="text-yellow-400" />
                 {{ product.rating }}
               </span>

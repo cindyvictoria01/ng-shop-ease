@@ -1,30 +1,46 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { ArrowLeft, LucideAngularModule, Star } from 'lucide-angular';
+import { ArrowLeft, LucideAngularModule, PackageX, Star } from 'lucide-angular';
 
-import { Product, ProductService } from '../product.service';
+import {
+  Product,
+  ProductService,
+} from '../../../core/services/product.service';
 
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
+import { CartService } from '../../../core/services/cart.service';
+import { ToastService } from '../../../shared/toast/toast.service';
+import { LoadingSpinnerComponent } from '../../../shared/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, NavbarComponent, LucideAngularModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    NavbarComponent,
+    LoadingSpinnerComponent,
+    LucideAngularModule,
+  ],
   templateUrl: './detail.component.html',
 })
 export class DetailComponent implements OnInit {
   readonly ArrowLeft = ArrowLeft;
   readonly Star = Star;
+  readonly PackageX = PackageX;
 
   product?: Product;
 
   isLoading = true;
+  isAddingToCart = false;
   hasError = false;
 
   constructor(
     private route: ActivatedRoute,
     private productService: ProductService,
+    private cartService: CartService,
+    private toastService: ToastService,
   ) {}
 
   ngOnInit(): void {
@@ -48,5 +64,28 @@ export class DetailComponent implements OnInit {
         this.isLoading = false;
       },
     });
+  }
+
+  addToCart(): void {
+    if (!this.product || this.isAddingToCart || this.product.stock <= 0) {
+      return;
+    }
+
+    this.isAddingToCart = true;
+
+    this.cartService.addToCart();
+    this.toastService.success('Added to cart');
+
+    setTimeout(() => {
+      this.isAddingToCart = false;
+    }, 800);
+  }
+
+  getOriginalPrice(): number {
+    if (!this.product?.discountPercentage) {
+      return this.product?.price ?? 0;
+    }
+
+    return this.product.price / (1 - this.product.discountPercentage / 100);
   }
 }
