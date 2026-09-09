@@ -73,17 +73,21 @@ Product data is provided by the [DummyJSON](https://dummyjson.com/) REST API.
 
 ## Screenshots
 
+### Login
+
+<img width="1913" height="906" alt="image" src="https://github.com/user-attachments/assets/f42933e7-8e0b-42a3-9b15-ae63ffeec68c" />
+
 ### Home
 
-<img width="1386" height="907" alt="Home" src="https://github.com/user-attachments/assets/fb17b400-9985-41ef-b703-7315a1255c74" />
+<img width="1902" height="910" alt="image" src="https://github.com/user-attachments/assets/4f5eef13-014f-4687-ad1f-07663ec77b05" />
 
 ### Product Detail
 
-<img width="1372" height="905" alt="Product Detail" src="https://github.com/user-attachments/assets/4b1283fd-6058-4c90-bcde-f41673af4654" />
+<img width="1903" height="910" alt="image" src="https://github.com/user-attachments/assets/4faefe91-17ae-4c49-9542-87524950ca05" />
 
 ### Shopping Cart
 
-<img width="1373" height="909" alt="Shopping Cart" src="https://github.com/user-attachments/assets/0f96624a-c346-4790-a48f-50864afb0c83" />
+<img width="1499" height="648" alt="image" src="https://github.com/user-attachments/assets/c8dfad15-de57-494b-947b-3b99a09102f6" />
 
 ## Notes
 
