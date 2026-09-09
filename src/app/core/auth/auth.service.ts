@@ -18,20 +18,15 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   login(email: string, password: string): Observable<User | undefined> {
-    return this.http.get<User[]>(this.apiUrl).pipe(
-      map((users) =>
-        users.find(
-          (user) => user.email === email && user.password === password,
+    return this.http
+      .get<User[]>(this.apiUrl)
+      .pipe(
+        map((users) =>
+          users.find(
+            (user) => user.email === email && user.password === password,
+          ),
         ),
-      ),
-      tap((user) => {
-        if (user) {
-          console.log('Login successful:', user.email);
-        } else {
-          console.log('Invalid email or password');
-        }
-      }),
-    );
+      );
   }
 
   setLoggedIn(): void {

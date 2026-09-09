@@ -3,15 +3,12 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ArrowLeft, LucideAngularModule, PackageX, Star } from 'lucide-angular';
 
-import {
-  Product,
-  ProductService,
-} from '../../../core/services/product.service';
-
 import { NavbarComponent } from '../../../shared/navbar/navbar.component';
-import { CartService } from '../../../core/services/cart.service';
+import { CartService } from '../../../core/cart/cart.service';
 import { ToastService } from '../../../shared/toast/toast.service';
 import { LoadingSpinnerComponent } from '../../../shared/loading-spinner/loading-spinner.component';
+import { Product } from '../models/product.model';
+import { ProductService } from '../product.service';
 
 @Component({
   selector: 'app-detail',
@@ -73,7 +70,7 @@ export class DetailComponent implements OnInit {
 
     this.isAddingToCart = true;
 
-    this.cartService.addToCart();
+    this.cartService.addToCart(this.product);
     this.toastService.success('Added to cart');
 
     setTimeout(() => {

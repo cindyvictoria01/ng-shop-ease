@@ -10,7 +10,7 @@ import {
 import { Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../core/auth/auth.service';
-import { CartService } from '../../core/services/cart.service';
+import { CartService } from '../../core/cart/cart.service';
 import { ToastService } from '../toast/toast.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 

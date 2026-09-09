@@ -10,8 +10,9 @@ import {
 } from 'lucide-angular';
 
 import { NavbarComponent } from '../../shared/navbar/navbar.component';
-import { Product, ProductService } from '../../core/services/product.service';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { Product } from '../products/models/product.model';
+import { ProductService } from '../products/product.service';
 
 @Component({
   selector: 'app-home',
